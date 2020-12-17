@@ -1,0 +1,3 @@
+export QUALYSUSER=
+export QUALYSPW=
+export DATABASE_URI="postgresql://root:qualys@localhost:5044/qualys"
