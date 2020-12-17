@@ -3,3 +3,4 @@ certifi
 xmltodict
 sqlalchemy
 flask
+ipython

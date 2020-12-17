@@ -1,3 +1,4 @@
 export QUALYSUSER=
 export QUALYSPW=
+export QUALHST=qualysguard.qg3.apps.qualys.com
 export DATABASE_URI="postgresql://root:qualys@localhost:5044/qualys"

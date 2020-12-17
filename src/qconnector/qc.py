@@ -84,6 +84,10 @@ class QConnector(object):
             xd = xmltodict.parse(r.text)
             host_list = []
             x2d_hl = xd['HOST_LIST_OUTPUT']['RESPONSE']['HOST_LIST']['HOST']
+            if isinstance(x2d_hl, dict):
+                hl = reduce_to_dict(x2d_hl)
+                host_list.append(hl)
+                return host_list
             for i in x2d_hl:
                 hl = reduce_to_dict(i)
                 host_list.append(hl)
@@ -92,14 +96,24 @@ class QConnector(object):
         raise Exception("Failed to obtain the host list")
 
     def do_host_vm_detection(self, details="All", truncation_limit=1000000, 
-                             show_cloud_tags=1, use_last=True):
+                             show_cloud_tags=1, use_last=True, ips=None, ids=None):
         params = { "action": "list",
                    "truncation_limit":truncation_limit,
                    "show_cloud_tags": show_cloud_tags
-                 }        
+                 }
+        if ips is not None:
+            params['ips'] = ips
+            del params['truncation_limit']
+            del params['show_cloud_tags']
+        elif ids is not None:
+            params['ids'] = ids
+            del params['truncation_limit']
+            del params['show_cloud_tags']
+
         if use_last:
             vm_scan_date_after =  self.last_date.strftime('%Y-%m-%d')
             self.last_date = datetime.now()
+            params['vm_scan_date_after'] = vm_scan_date_after
 
         r = self.session.post(self.qualys_api_url+self.HOST_VM_DETECTION, data=params,
                    headers=self.headers, verify=certifi.where())
@@ -108,6 +122,10 @@ class QConnector(object):
             xd = xmltodict.parse(r.text)
             host_list = []
             x2d_hl = xd['HOST_LIST_VM_DETECTION_OUTPUT']['RESPONSE']['HOST_LIST']['HOST']
+            if isinstance(x2d_hl, dict):
+                hl = reduce_to_dict(x2d_hl)
+                host_list.append(hl)
+                return host_list
             for i in x2d_hl:
                 hl = reduce_to_dict(i)
                 host_list.append(hl)
@@ -172,9 +190,10 @@ class QConnector(object):
         self.do_logout()
         return l
 
-    def get_vm_detections(self, truncation_limit=10, use_last=False):
+    def get_vm_detections(self, truncation_limit=10, use_last=False, ips=None, ids=None):
         self.do_login()
-        l = self.do_host_vm_detection(truncation_limit=truncation_limit, use_last=use_last)
+        l = self.do_host_vm_detection(truncation_limit=truncation_limit, use_last=use_last,
+                                      ips=ips, ids=ids)
         self.do_logout()
         return l
 

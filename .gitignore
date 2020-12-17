@@ -1,3 +1,4 @@
+qc-venv
 docker/my_environment
 internal/*
 .idea/*
