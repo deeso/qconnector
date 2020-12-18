@@ -1,38 +1,16 @@
-from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, \
+
+from sqlalchemy import Column, Integer, String, DateTime, \
      ForeignKey, event
-from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
-from sqlalchemy.ext.declarative import declarative_base
-
-from werkzeug import cached_property, http_date
-
-from flask import url_for, Markup
-
-db_parameters = {
-    'USERNAME': 'root',
-    'PASSWORD': 'password',
-    'DATABASE': 'qualys_data'
-}
-DATABASE_URI = "postgresql://{USERNAME}:{PASSWORD}@localhost:5432/{DATABASE}".format(**db_parameters)
-
-engine = create_engine(DATABASE_URI,
-                       convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+from .qc_init import Model, engine
 
 def init_db():
     Model.metadata.create_all(bind=engine)
 
 
-Model = declarative_base(name='Model')
-Model.query = db_session.query_property()
-
-
-
 class VulnInfo(Model):
     __tablename__ = 'vuln_info'
-    qid = Column('qid', Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    qid = Column('qid', Integer)
     type = Column('type', String)
     severity = Column('severity', String)
     port = Column('port', String)
@@ -40,14 +18,14 @@ class VulnInfo(Model):
     ssl = Column('ssl', String)
     results = Column('results', String)
     status = Column('status', String)
-    first_found_datetime = Column('first_found_datetime', String)
-    last_found_datetime = Column('last_found_datetime', String)
+    first_found_datetime = Column('first_found_datetime', DateTime)
+    last_found_datetime = Column('last_found_datetime', DateTime)
     times_found = Column('times_found', String)
-    last_test_datetime = Column('last_test_datetime', String)
-    last_update_datetime = Column('last_update_datetime', String)
+    last_test_datetime = Column('last_test_datetime', DateTime)
+    last_update_datetime = Column('last_update_datetime', DateTime)
     is_ignored = Column('is_ignored', String)
     is_disabled = Column('is_disabled', String)
-    last_processed_datetime = Column('last_processed_datetime', String)
+    last_processed_datetime = Column('last_processed_datetime', DateTime)
 
     def __init__(self, **kargs):
         self.qid = kargs.get('qid')
@@ -100,15 +78,14 @@ class HostInfo(Model):
     ip = Column('ip', String)
     tracking_method = Column('tracking_method', String)
     name = Column('name', String)
-    tracking_method = Column('tracking_method', String)
     dns = Column('dns', String)
     netbios = Column('netbios', String)
     os = Column('os', String)
-    last_vuln_scan_datetime = Column('last_vuln_scan_datetime', String)
-    last_vm_scanned_date = Column('last_vm_scanned_date', String)
-    last_vm_scanned_duration = Column('last_vm_scanned_duration', String)
-    last_vm_auth_scanned_date = Column('last_vm_auth_scanned_date', String)
-    last_vm_auth_scanned_duration = Column('last_vm_auth_scanned_duration', String)
+    last_vuln_scan_datetime = Column('last_vuln_scan_datetime', DateTime)
+    last_vm_scanned_date = Column('last_vm_scanned_date', DateTime)
+    last_vm_scanned_duration = Column('last_vm_scanned_duration', DateTime)
+    last_vm_auth_scanned_date = Column('last_vm_auth_scanned_date', DateTime)
+    last_vm_auth_scanned_duration = Column('last_vm_auth_scanned_duration', DateTime)
     
     def __init__(self, **kargs):
         self.id = kargs.get('id')
@@ -131,7 +108,6 @@ class HostInfo(Model):
             ip=self.ip,
             tracking_method=self.tracking_method,
             name=self.name,
-            tracking_method=self.tracking_method,
             dns=self.dns,
             netbios=self.netbios,
             os=self.os,

@@ -26,4 +26,27 @@ hostname = os.environ['QUALHST']
 s = QConnector(username, password, hostname)
 hosts = s.get_host_assets(truncation_limit=1000000)
 print(hosts[:2])
+
+ip = hosts[0]['ip']
+vm = s.get_vm_detections(ips=ip)
+print(vm)
 ```
+
+##### Setting up Docker
+```bash
+# make sure database.env variables)
+# POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+# match my_environment (environment) DATABASE_URI
+
+cd docker
+docker-compose up
+```
+
+##### Python Initialize Database
+```python
+from qconnector.qc_orm import init_db
+init_db()
+```
+
+
+
