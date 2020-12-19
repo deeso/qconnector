@@ -5,3 +5,5 @@ sqlalchemy
 flask
 ipython
 psycopg2
+python-dateutil
+pytz

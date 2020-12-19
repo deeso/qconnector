@@ -10,6 +10,7 @@ import certifi
 from datetime import datetime
 import xmltodict
 
+
 def reduce_to_dict(item):
     if isinstance(item, list):
         return [reduce_to_dict(i) for i in item]

@@ -12,7 +12,7 @@ setup(name='qconnector',
       description='qualys scan results->postgres',
       author='Adam Pridgen',
       author_email='apridgen@roblox.com',
-      install_requires=["requests", "certifi", "xmltodict", "sqlalchemy", "flask",],
+      install_requires=["requests", "certifi", "xmltodict", "sqlalchemy", "flask", "pytz", "python-dateutil"],
       packages=find_packages('src'),
       package_dir={'': 'src'},
 )
