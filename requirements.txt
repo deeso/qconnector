@@ -4,6 +4,6 @@ xmltodict
 sqlalchemy
 flask
 ipython
-psycopg2
+psycopg2-binary
 python-dateutil
 pytz
